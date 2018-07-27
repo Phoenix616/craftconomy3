@@ -175,6 +175,11 @@ public class SQLiteEngine extends StorageEngine {
     }
 
     @Override
+    public void invalidateUsername(String name) {
+
+    }
+
+    @Override
     public void updateUsername(String name, UUID uuid) {
 
     }

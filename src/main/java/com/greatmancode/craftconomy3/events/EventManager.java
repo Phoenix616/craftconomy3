@@ -51,6 +51,7 @@ public class EventManager implements Listener {
             Account account = Common.getInstance().getStorageHandler().getStorageEngine().getAccount(event.getUuid());
             if (account != null && !event.getName().equals(account.getAccountName())) {
                 Common.getInstance().getAccountManager().clearCache(account.getAccountName());
+                Common.getInstance().getStorageHandler().getStorageEngine().invalidateUsername(event.getName().toLowerCase());
                 Common.getInstance().getStorageHandler().getStorageEngine().updateUsername(event.getName().toLowerCase(), event.getUuid());
             } else if (account == null){
                 //We set deh UUID

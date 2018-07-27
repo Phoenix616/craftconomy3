@@ -221,6 +221,13 @@ public abstract class StorageEngine {
     public abstract void deleteCurrency(Currency currency);
 
     /**
+     * Invalidate a username for all accounts using it
+     *
+     * @param name The name to invalidate
+     */
+    public abstract void invalidateUsername(String name);
+
+    /**
      * Update the username in the account
      *
      * @param name The name of the player

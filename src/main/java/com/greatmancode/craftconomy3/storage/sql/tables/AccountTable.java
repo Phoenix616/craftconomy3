@@ -61,6 +61,8 @@ public class AccountTable extends DatabaseTable {
 
     public final String deleteEntry = "DELETE FROM " + getPrefix() + TABLE_NAME + " WHERE name=? AND bank=?";
 
+    public final String updateNameByName = "UPDATE "+getPrefix()+TABLE_NAME + " SET name=? WHERE name=?";
+
     public final String updateNameByUuid = "UPDATE "+getPrefix()+TABLE_NAME + " SET name=? WHERE uuid=?";
 
     public final String updateUuidByName = "UPDATE "+getPrefix()+TABLE_NAME+" SET uuid=? WHERE name=?";

@@ -185,15 +185,14 @@ public abstract class SQLStorageEngine extends StorageEngine {
         try {
             connection = (commitConnection != null) ? commitConnection : db.getConnection();
             statement = connection.prepareStatement(logTable.insertEntry);
-            statement.setString(1, account.getAccountName());
-            statement.setBoolean(2, account.isBankAccount());
-            statement.setString(3, info.toString());
-            statement.setString(4, cause.toString());
-            statement.setString(5, causeReason);
-            statement.setString(6, worldName);
-            statement.setDouble(7, amount);
-            statement.setString(8, currency.getName());
-            statement.setTimestamp(9, timestamp);
+            statement.setInt(1, account.getId());
+            statement.setString(2, info.toString());
+            statement.setString(3, cause.toString());
+            statement.setString(4, causeReason);
+            statement.setString(5, worldName);
+            statement.setDouble(6, amount);
+            statement.setString(7, currency.getName());
+            statement.setTimestamp(8, timestamp);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -606,6 +605,26 @@ public abstract class SQLStorageEngine extends StorageEngine {
             connection = (commitConnection != null) ? commitConnection : db.getConnection();
             statement = connection.prepareStatement(currencyTable.deleteEntry);
             statement.setString(1, currency.getName());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            Tools.closeJDBCStatement(statement);
+            if (commitConnection == null) {
+                Tools.closeJDBCConnection(connection);
+            }
+        }
+    }
+
+    @Override
+    public void invalidateUsername(String name) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = (commitConnection != null) ? commitConnection : db.getConnection();
+            statement = connection.prepareStatement(accountTable.updateNameByName);
+            statement.setString(1, "old:" + name);
+            statement.setString(2, name);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
