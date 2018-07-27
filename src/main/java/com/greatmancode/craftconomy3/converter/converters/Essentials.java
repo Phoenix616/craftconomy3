@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ public class Essentials extends Converter {
 
     @Override
     public List<String> getDbInfo() {
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class Essentials extends Converter {
                 return name.toLowerCase().endsWith(".yml");
             }
         });
-        List<User> userList = new ArrayList<User>();
+        List<User> userList = new ArrayList<>();
         Common.getInstance().getLogger().info("Amount of accounts found:" + accounts.length);
         int i = 0;
         String line;

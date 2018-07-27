@@ -8,7 +8,7 @@ apply plugin: 'com.github.johnrengelman.shadow' // Provides dependency shading
 apply plugin: 'license'
 
 group = 'com.greatmancode'
-version = '3.2.2-SNAPSHOT'
+version = '3.3.1'
 //archiveBaseName = "craftconomy3"
 description = "Craftconomy3"
 sourceCompatibility = 1.7
@@ -79,10 +79,13 @@ configurations.all {
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.1.2'
-        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
+        classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.12.1'
     }
 }
 
@@ -100,30 +103,32 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.greatmancode', name: 'tools', version:'1.1'
-    compile group: 'com.zaxxer', name: 'HikariCP', version:'1.4.0'
-    compile group: 'org.javassist', name: 'javassist', version:'3.18.2-GA'
-    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.7'
-    compile group: 'com.h2database', name: 'h2', version:'1.4.180'
+    compile group: 'com.greatmancode', name: 'tools', version:'1.3-SNAPSHOT'
+    compile group: 'com.zaxxer', name: 'HikariCP', version:'2.4.3'
+    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.12'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version:'1.7.12'
+    compile group: 'com.h2database', name: 'h2', version:'1.4.187'
     compile group: 'org.xerial', name: 'sqlite-jdbc', version:'3.7.15-M1'
     testCompile group: 'junit', name: 'junit', version:'4.11'
-    testCompile group: 'org.bukkit', name: 'bukkit', version:'1.8-R0.1-SNAPHSOT'
+    testCompile group: 'org.bukkit', name: 'bukkit', version:'1.8.3-R0.1-SNAPSHOT'
     testCompile group: 'org.reflections', name: 'reflections', version:'0.9.9-RC1'
     compile group: 'org.projectlombok', name: 'lombok', version:'1.12.6'
+    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
 }
 
 shadowJar {
     dependencies {
-        include(dependency('com.greatmancode:tools:1.1'))
-        include(dependency('com.zaxxer:HikariCP:1.4.0'))
-        include(dependency('org.javassist:javassist'))
-        include(dependency('org.slf4j:slf4j-api:1.7.7'))
-        include(dependency('com.h2database:h2:1.4.180'))
+        include(dependency('com.greatmancode:tools:1.3-SNAPSHOT'))
+        include(dependency('com.zaxxer:HikariCP:2.4.3'))
+        include(dependency('org.slf4j:slf4j-api:1.7.12'))
+        include(dependency('org.slf4j:slf4j-simple:1.7.12'))
+        include(dependency('com.h2database:h2:1.4.187'))
+        include(dependency('com.googlecode.json-simple:json-simple:1.1'))
     }
     relocate 'com.greatmancode.tools', 'com.greatmancode.craftconomy3.tools'
-    relocate 'com.zaxxer.hikari', 'com.greatmancode.com.zaxxer.hikari'
-    relocate 'javassist', 'com.greatmancode.javassist'
-    relocate 'org.slf4j', 'com.greatmancode.org.slf4j'
+    relocate 'com.zaxxer.hikari', 'com.greatmancode.com.zaxxer.libs.hikari'
+    //relocate 'javassist', 'com.greatmancode.libs.javassist'
+    relocate 'org.slf4j', 'com.greatmancode.libs.org.slf4j'
     //baseName = 'craftconomy3'
     classifier = ''
 }
@@ -142,10 +147,9 @@ jar.dependsOn filter
 
 license {
     header rootProject.file('HEADER.txt')
-    ext.copyright = 'Copyright (c) 2011-2014, Greatman'
+    ext.copyright = 'Copyright (c) 2011-2016, Greatman'
     ext.url = 'http://github.com/greatman'
     ext.name = 'Craftconomy3'
-    skipExistingHeaders true //Temporary
 }
 
 

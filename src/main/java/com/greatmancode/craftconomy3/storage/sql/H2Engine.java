@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +33,7 @@ public class H2Engine extends SQLStorageEngine {
 
     public H2Engine() {
         HikariConfig config = new HikariConfig();
-        config.setMaximumPoolSize(10);
+        config.setMaximumPoolSize(Common.getInstance().getMainConfig().getInt("System.Database.Poolsize"));
         config.setDataSourceClassName("org.h2.jdbcx.JdbcDataSource");
         config.addDataSourceProperty("user", "sa");
         config.addDataSourceProperty("url", "jdbc:h2:file:"+new File(Common.getInstance().getServerCaller().getDataFolder().getPath(), "database").getAbsolutePath()+";MV_STORE=FALSE");

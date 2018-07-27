@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,8 +30,8 @@ public class AccountTable extends DatabaseTable {
             "  `ignoreACL` boolean DEFAULT FALSE," +
             "  `bank` boolean DEFAULT FALSE," +
             "  PRIMARY KEY (id)," +
-            "  KEY `account_name_index` (`name`(50))" +
-            ") ENGINE=InnoDB;";
+            "  KEY `" + getPrefix() + "account_name_index` (`name`(50))" +
+            ") ENGINE=InnoDB CHARSET=utf8;";
 
     public final String createTableH2 = "CREATE TABLE IF NOT EXISTS " + getPrefix() + TABLE_NAME + " (" +
             "id int PRIMARY KEY AUTO_INCREMENT," +
@@ -40,8 +40,8 @@ public class AccountTable extends DatabaseTable {
             "uuid varchar(36) NULL," +
             "ignoreACL boolean DEFAULT FALSE," +
             "bank boolean DEFAULT FALSE);" +
-            "CREATE INDEX IF NOT EXISTS account_name ON " + getPrefix() + TABLE_NAME + "(name);" +
-            "CREATE INDEX IF NOT EXISTS account_uuid ON " + getPrefix() + TABLE_NAME + "(uuid);";
+            "CREATE INDEX IF NOT EXISTS "+getPrefix()+"account_name ON " + getPrefix() + TABLE_NAME + "(name);" +
+            "CREATE INDEX IF NOT EXISTS "+getPrefix()+"account_uuid ON " + getPrefix() + TABLE_NAME + "(uuid);";
 
     public final String selectEntryName = "SELECT * FROM " + getPrefix() + TABLE_NAME + " WHERE name=? AND bank=?";
 

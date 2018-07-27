@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -351,4 +351,19 @@ public abstract class StorageEngine {
      * @param userList The user list being converted
      */
     public abstract void saveImporterUsers(List<Converter.User> userList);
+
+    /**
+     * Disable auto-commit in the storage engine
+     */
+    public abstract void disableAutoCommit();
+
+    /**
+     * Enable auto-commit in the storage engine (default)
+     */
+    public abstract void enableAutoCommit();
+
+    /**
+     * Commit the changes. Only works when autocommit is disabled
+     */
+    public abstract void commit();
 }

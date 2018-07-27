@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class WorldGroup {
     private String name;
-    private List<String> worldList = new ArrayList<String>();
+    private List<String> worldList = new ArrayList<>();
 
     /**
      * Initialize a world group.

@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -186,7 +186,7 @@ public class Currency {
 
     /**
      * Save the currency information. Used while changing the main currency name.
-     * @param oldName
+     * @param oldName The old currency name.
      */
     private void save(String oldName) {
         Common.getInstance().getStorageHandler().getStorageEngine().saveCurrency(oldName, this);

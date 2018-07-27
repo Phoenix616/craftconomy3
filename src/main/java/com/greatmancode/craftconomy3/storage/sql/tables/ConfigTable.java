@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +28,7 @@ public class ConfigTable extends DatabaseTable {
             "  `" + NAME_FIELD + "` varchar(30) NOT NULL," +
             "  `" + VALUE_FIELD + "` varchar(255) NOT NULL," +
             "  PRIMARY KEY (`"+NAME_FIELD+"`)" +
-            ") ENGINE=InnoDB;";
+            ") ENGINE=InnoDB CHARSET=utf8;";
 
     public final String createTableH2 = "CREATE TABLE IF NOT EXISTS `" + getPrefix() + TABLE_NAME + "` (" +
             "  `" + NAME_FIELD + "` varchar(30) NOT NULL," +

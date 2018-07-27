@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,9 +32,9 @@ public class LogTable extends DatabaseTable {
             "  `amount` double DEFAULT NULL," +
             "  `currency_id` varchar(50)," +
             "  PRIMARY KEY (`id`)," +
-            "  CONSTRAINT `fk_log_account` FOREIGN KEY (`username_id`) REFERENCES `" + getPrefix() + AccountTable.TABLE_NAME + "` (`id`) ON DELETE CASCADE," +
-            "  CONSTRAINT `fk_log_currency` FOREIGN KEY (`currency_id`) REFERENCES `" + getPrefix() + CurrencyTable.TABLE_NAME + "` (`name`) ON DELETE CASCADE" +
-            ") ENGINE=InnoDB;";
+            "  CONSTRAINT `"+getPrefix()+"fk_log_account` FOREIGN KEY (`username_id`) REFERENCES `" + getPrefix() + AccountTable.TABLE_NAME + "` (`id`) ON DELETE CASCADE," +
+            "  CONSTRAINT `"+getPrefix()+"fk_log_currency` FOREIGN KEY (`currency_id`) REFERENCES `" + getPrefix() + CurrencyTable.TABLE_NAME + "` (`name`) ON DELETE CASCADE" +
+            ") ENGINE=InnoDB CHARSET=utf8;";
 
     public final String createTableH2 = "CREATE TABLE IF NOT EXISTS `" + getPrefix() + TABLE_NAME + "` (" +
             "  `id` int(11) NOT NULL AUTO_INCREMENT," +

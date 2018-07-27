@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,6 +33,7 @@ import java.util.List;
  * @author greatman
  */
 public class Account {
+    private int id;
     private AccountACL acl;
     private boolean bankAccount, infiniteMoney, ignoreACL;
     private String name;
@@ -40,12 +41,14 @@ public class Account {
     /**
      * Load a account. Creates one if it doesn't exist.
      *
+     * @param id The unique id used in the database as primary key
      * @param name The account name
      * @param bankAccount If the account is a bank account
      * @param infiniteMoney If the account have no money limit
      * @param ignoreACL If the account ignore it's ACL values (Bank only)
      */
-    public Account(String name, boolean bankAccount, boolean infiniteMoney, boolean ignoreACL) {
+    public Account(int id, String name, boolean bankAccount, boolean infiniteMoney, boolean ignoreACL) {
+        this.id = id;
         this.name = name;
         this.bankAccount = bankAccount;
         this.infiniteMoney = infiniteMoney;
@@ -356,5 +359,14 @@ public class Account {
     public void setIgnoreACL(boolean ignore) {
         Common.getInstance().getStorageHandler().getStorageEngine().setIgnoreACL(this, ignore);
         ignoreACL = ignore;
+    }
+    
+    /**
+     * Returns the unique id used as primary key in the database
+     * 
+     * @return the unique id
+     */
+    public int getId() {
+        return this.id;
     }
 }

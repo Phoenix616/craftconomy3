@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 public class BoseEconomy extends Converter {
     private static final String TAB_CHECK = "\\t+";
     private BufferedReader flatFileReader = null;
-    private List<User> userList = new ArrayList<User>();
+    private List<User> userList = new ArrayList<>();
 
     public BoseEconomy() {
         getDbTypes().add("flatfile");

@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ public class ConverterList {
     /**
      * Contains the list of the loaded converters.
      */
-    private final Map<String, Converter> converterList = new HashMap<String, Converter>();
+    private final Map<String, Converter> converterList = new HashMap<>();
 
     public Map<String, Converter> getConverterList() {
         return converterList;

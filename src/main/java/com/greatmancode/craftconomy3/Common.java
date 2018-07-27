@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,6 +28,7 @@ import com.greatmancode.craftconomy3.commands.group.GroupCreateCommand;
 import com.greatmancode.craftconomy3.commands.group.GroupDelWorldCommand;
 import com.greatmancode.craftconomy3.commands.money.*;
 import com.greatmancode.craftconomy3.commands.setup.*;
+import com.greatmancode.craftconomy3.converter.H2ToMySQLConverter;
 import com.greatmancode.craftconomy3.currency.Currency;
 import com.greatmancode.craftconomy3.currency.CurrencyManager;
 import com.greatmancode.craftconomy3.events.EventManager;
@@ -42,6 +43,7 @@ import com.greatmancode.tools.configuration.Config;
 import com.greatmancode.tools.configuration.ConfigurationManager;
 import com.greatmancode.tools.interfaces.caller.ServerCaller;
 import com.greatmancode.tools.language.LanguageManager;
+import com.greatmancode.tools.utils.FeatherBoard;
 import com.greatmancode.tools.utils.Metrics;
 import com.greatmancode.tools.utils.Tools;
 import com.greatmancode.tools.utils.Updater;
@@ -102,6 +104,9 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
             if (!getMainConfig().has("System.Database.Prefix")) {
                 getMainConfig().setValue("System.Database.Prefix", "cc3_");
             }
+            if (!getMainConfig().has("System.Database.Poolsize")) {
+                getMainConfig().setValue("System.Database.Poolsize", 10);
+            }
 
             languageManager = new LanguageManager(serverCaller, serverCaller.getDataFolder(), "lang.yml");
             loadLanguage();
@@ -135,7 +140,7 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
                     sendConsoleMessage(Level.WARNING, getLanguageManager().getString("loaded_setup_mode"));
                 }
             } else {
-                commandManager.setLevel(1);
+                commandManager.setCurrentLevel(1);
                 initialiseDatabase();
                 updateDatabase();
                 initializeCurrency();
@@ -148,6 +153,7 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
 
 
             getServerCaller().registerPermission("craftconomy.money.log.others");
+            addFeatherboardSupport();
             initialized = true;
         }
     }
@@ -200,9 +206,7 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
         languageManager = new LanguageManager(serverCaller, serverCaller.getDataFolder(), "lang.yml");
         loadLanguage();
         serverCaller.setCommandPrefix(languageManager.getString("command_prefix"));
-        commandManager = new CommandHandler(serverCaller);
-        registerCommands();
-        commandManager.setLevel(1);
+        commandManager.setCurrentLevel(1);
         initialiseDatabase();
         updateDatabase();
         initializeCurrency();
@@ -363,7 +367,9 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
                 string.append(amount).append(".").append(coin).append(" ").append(name);
             } else if (format == DisplayFormat.SIGN) {
                 string.append(currency.getSign()).append(amount).append(".").append(coin);
-            } else if (format == DisplayFormat.MAJORONLY) {
+            } else if (format == DisplayFormat.SIGNFRONT) {
+                string.append(amount).append(".").append(coin).append(currency.getSign());
+            }else if (format == DisplayFormat.MAJORONLY) {
                 string.append(amount).append(" ").append(name);
             }
         }
@@ -391,9 +397,10 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
             storageHandler = new StorageHandler();
 
             //TODO: Re-support that
-            /*if (getMainConfig().getBoolean("System.Database.ConvertFromSQLite")) {
-                convertDatabase(dbManager);
-            }*/
+            if (getMainConfig().getBoolean("System.Database.ConvertFromH2")) {
+                convertDatabase();
+            }
+
             databaseInitialized = true;
             sendConsoleMessage(Level.INFO, getLanguageManager().getString("database_manager_loaded"));
         }
@@ -401,15 +408,13 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
 
     /**
      * Convert from SQLite to MySQL
-     *
-     * @param dbManagernew The MySQL instance
      */
-    /*private void convertDatabase(DatabaseManager dbManagernew) throws InvalidDatabaseConstructor {
+    private void convertDatabase(){
         sendConsoleMessage(Level.INFO, getLanguageManager().getString("starting_database_convert"));
-        new SQLiteToMySQLConverter().run();
+        new H2ToMySQLConverter().run();
         sendConsoleMessage(Level.INFO, getLanguageManager().getString("convert_done"));
-        getMainConfig().setValue("System.Database.ConvertFromSQLite", false);
-    }*/
+        getMainConfig().setValue("System.Database.ConvertFromH2", false);
+    }
 
     /**
      * Initialize the {@link CurrencyManager}
@@ -649,7 +654,7 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
         loadDefaultSettings();
         Common.getInstance().startUp();
         Common.getInstance().getMainConfig().setValue("System.Setup", false);
-        commandManager.setLevel(1);
+        commandManager.setCurrentLevel(1);
         sendConsoleMessage(Level.INFO, "Quick-Config done!");
     }
 
@@ -787,7 +792,7 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
         languageManager.addLanguageEntry("cant_withdraw_bank", "{{DARK_RED}}You can't withdraw in this account!");
         languageManager.addLanguageEntry("bank_price_modified", "{{DARK_GREEN}}Bank price modified!");
         languageManager.addLanguageEntry("config_bankprice_cmd_help", "/craftconomy bankprice <Amount> - Change the price to create a bank account.");
-        languageManager.addLanguageEntry("config_format_cmd_help", "/craftconomy format <long/small/sign/majoronly> - Set the display format.");
+        languageManager.addLanguageEntry("config_format_cmd_help", "/craftconomy format <long/small/sign/signfront/majoronly> - Set the display format.");
         languageManager.addLanguageEntry("config_cmd_help", "/craftconomy - shows config command help");
         languageManager.addLanguageEntry("config_holdings_cmd_help", "/craftconomy holdings <Amount> - Set the default amount of money of a user account.");
         languageManager.addLanguageEntry("config_help_title", "{{DARK_GREEN}} ======== Craftconomy Commands ========");
@@ -903,6 +908,7 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
         languageManager.addLanguageEntry("rates_header", "{{DARK_GREEN}}[Currency rates]");
         languageManager.addLanguageEntry("bank_delete_cmd_help", "/bank delete <Name> - Delete a bank account that you own.");
         languageManager.addLanguageEntry("bank_delete_not_owner", "{{DARK_RED}}You aren't this bank owner!");
+        languageManager.addLanguageEntry("bank_account_deleted", "Bank account deleted");
         languageManager.addLanguageEntry("currency_list_cmd_help", "/currency list - List all the currencies");
         languageManager.addLanguageEntry("currency_list_title", "{{DARK_GREEN}}====== {{WHITE}}Currencies {{DARK_GREEN}}======");
         languageManager.addLanguageEntry("invalid_time_log", "Invalid time! It needs to be a positive number!");
@@ -951,7 +957,8 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
         mainConfig.setValue("System.Database.Password", "");
         mainConfig.setValue("System.Database.Db", "craftconomy");
         mainConfig.setValue("System.Database.Prefix", "cc3_");
-        mainConfig.setValue("System.Database.ConvertFromSQLite", false);
+        mainConfig.setValue("System.Database.Poolsize", 10);
+        mainConfig.setValue("System.Database.ConvertFromH2", false);
     }
 
     /**
@@ -1007,5 +1014,19 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
         Common.getInstance().sendConsoleMessage(Level.INFO, "Your database is out of date! (Version " + currentVersion + "). Updating it to Revision " + newVersion + ".");
     }
 
+    private void addFeatherboardSupport() {
+        if (getServerCaller() instanceof BukkitServerCaller && getServerCaller().isPluginEnabled("MVdWPlaceholderAPI")) {
+            FeatherBoard.registerPlaceHolder(getServerCaller().getLoader(), "cc3money", new FeatherBoard.FeatherBoardReplaceEvent() {
+
+                @Override
+                public String getResult(String username, boolean isOnline) {
+                    if (getAccountManager().exist(username, false)) {
+                        return format(null, getCurrencyManager().getDefaultCurrency(), getAccountManager().getAccount(username, false).getBalance("default", getCurrencyManager().getDefaultCurrency().getName()), getDisplayFormat());
+                    }
+                    return "";
+                }
+            });
+        }
+    }
 
 }

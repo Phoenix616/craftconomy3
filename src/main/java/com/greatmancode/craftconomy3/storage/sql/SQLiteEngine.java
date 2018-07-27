@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -53,6 +53,7 @@ public class SQLiteEngine extends StorageEngine {
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("org.sqlite.JDBC");
         config.setJdbcUrl("jdbc:sqlite:"+ Common.getInstance().getServerCaller().getDataFolder() + File.separator +  "database.db");
+        config.setConnectionTestQuery("SELECT 1");
         db = new HikariDataSource(config);
         configTable = new ConfigTable(tablePrefix);
     }
@@ -265,6 +266,21 @@ public class SQLiteEngine extends StorageEngine {
 
     @Override
     public void saveImporterUsers(List<Converter.User> userList) {
+
+    }
+
+    @Override
+    public void disableAutoCommit() {
+
+    }
+
+    @Override
+    public void enableAutoCommit() {
+
+    }
+
+    @Override
+    public void commit() {
 
     }
 }

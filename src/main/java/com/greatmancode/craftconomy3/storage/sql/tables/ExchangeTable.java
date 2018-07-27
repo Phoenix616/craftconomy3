@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,13 +27,13 @@ public class ExchangeTable extends DatabaseTable {
             "  `to_currency` VARCHAR(50) NOT NULL," +
             "  `amount` double DEFAULT 1.0," +
             "  PRIMARY KEY (`from_currency`, to_currency)," +
-            "  CONSTRAINT `fk_exchange_currencyfrom`" +
+            "  CONSTRAINT `"+getPrefix()+"fk_exchange_currencyfrom`" +
             "    FOREIGN KEY (from_currency)" +
             "    REFERENCES " + getPrefix() + CurrencyTable.TABLE_NAME + " (name) ON UPDATE CASCADE ON DELETE CASCADE," +
-            "  CONSTRAINT `fk_exchange_currencyto`" +
+            "  CONSTRAINT `"+getPrefix()+"fk_exchange_currencyto`" +
             "    FOREIGN KEY (to_currency)" +
             "    REFERENCES " + getPrefix() + CurrencyTable.TABLE_NAME + " (name) ON UPDATE CASCADE ON DELETE CASCADE" +
-            ") ENGINE=InnoDB;";
+            ") ENGINE=InnoDB CHARSET=utf8;";
 
     public final String createTableH2 = "CREATE TABLE IF NOT EXISTS `" + getPrefix() + TABLE_NAME + "` (" +
             "  `from_currency` VARCHAR(50) NOT NULL," +

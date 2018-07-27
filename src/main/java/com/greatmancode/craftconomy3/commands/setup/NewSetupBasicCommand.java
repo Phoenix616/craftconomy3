@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -98,6 +98,7 @@ public class NewSetupBasicCommand extends CommandExecutor {
                 Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, "{{WHITE}}Long{{DARK_GREEN}}: {{WHITE}}40 Dollars 1 Coin");
                 Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, "{{WHITE}}Small{{DARK_GREEN}}: {{WHITE}} 40.1 Dollars");
                 Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, "{{WHITE}}Sign{{DARK_GREEN}}: {{WHITE}} $40.1");
+                Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, "{{WHITE}}Signfront{{DARK_GREEN}}: {{WHITE}} 40.1$");
                 Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, "{{WHITE}}MajorOnly{{DARK_GREEN}}: {{WHITE}}40 Dollars");
                 Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, "{{DARK_GREEN}}Please type {{WHITE}}/ccsetup basic <format>");
             } else {

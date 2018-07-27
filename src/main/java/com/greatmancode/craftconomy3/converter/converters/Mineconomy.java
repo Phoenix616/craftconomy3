@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -98,7 +98,7 @@ public class Mineconomy extends Converter {
             connection = db.getConnection();
             statement = connection.prepareStatement(MineconomyTable.SELECT_ENTRY);
             ResultSet set = statement.executeQuery();
-            List<User> userList = new ArrayList<User>();
+            List<User> userList = new ArrayList<>();
             while (set.next()) {
                 userList.add(new User(set.getString("account"), set.getDouble("balance")));
             }

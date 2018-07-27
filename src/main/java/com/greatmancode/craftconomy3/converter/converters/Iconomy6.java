@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -168,13 +168,13 @@ public class Iconomy6 extends Converter {
         boolean result = false;
 
         try {
-            List<String> file = new ArrayList<String>();
+            List<String> file = new ArrayList<>();
             String str;
             while ((str = flatFileReader.readLine()) != null) {
                 file.add(str);
             }
             flatFileReader.close();
-            List<User> userList = new ArrayList<User>();
+            List<User> userList = new ArrayList<>();
             for (String aFile : file) {
                 String[] info = aFile.split(" ");
                 try {
@@ -211,7 +211,7 @@ public class Iconomy6 extends Converter {
                 statement = connection.prepareStatement(IConomyTable.SELECT_ENTRY);
             }
             ResultSet set = statement.executeQuery();
-            List<User> userList = new ArrayList<User>();
+            List<User> userList = new ArrayList<>();
             while (set.next()) {
                 userList.add(new User(set.getString("username"), set.getDouble("balance")));
             }

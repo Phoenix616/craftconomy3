@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@ public class NewSetupDatabaseCommand extends CommandExecutor {
         H2;
     }
 
-    private static final Map<String, String> VALUES = new HashMap<String, String>();
+    private static final Map<String, String> VALUES = new HashMap<>();
     private static final String ERROR_MESSAGE = "{{DARK_RED}}A error occured. The error is: {{WHITE}}%s";
     private static final String CONFIG_NODE = "System.Database.Type";
     private INTERNALSTEP step = INTERNALSTEP.START;

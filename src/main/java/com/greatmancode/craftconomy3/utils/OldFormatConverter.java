@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -66,6 +66,7 @@ public class OldFormatConverter {
         } else if (dbType.equalsIgnoreCase("sqlite")) {
             config.setDriverClassName("org.sqlite.JDBC");
             config.setJdbcUrl("jdbc:sqlite:"+ Common.getInstance().getServerCaller().getDataFolder() + File.separator +  "database.db");
+            config.setConnectionTestQuery("SELECT 1");
             db = new HikariDataSource(config);
         } else {
             Common.getInstance().sendConsoleMessage(Level.SEVERE, "Unknown database type for old format converter!");
@@ -176,9 +177,9 @@ public class OldFormatConverter {
             JSONArray logArray = new JSONArray();
             while(internalSet.next()) {
                 JSONObject object = new JSONObject();
-                object.put("type", internalSet.getObject("type"));
-                object.put("cause", internalSet.getObject("cause"));
-                object.put("timestamp", internalSet.getTimestamp("timestamp"));
+                object.put("type", getObject(internalSet.getBlob("type" )).toString());
+                object.put("cause", getObject(internalSet.getBlob("cause")).toString());
+                object.put("timestamp", internalSet.getTimestamp("timestamp").getTime());
                 object.put("causeReason", internalSet.getString("causeReason"));
                 object.put("currencyName", internalSet.getString("currencyName"));
                 object.put("worldName", internalSet.getString("worldName"));
@@ -269,10 +270,12 @@ public class OldFormatConverter {
         } else {
             throw new UnsupportedOperationException("Unknown database!");
         }
+        engine.disableAutoCommit();
         Common.getInstance().sendConsoleMessage(Level.INFO, "Loading backup json file");
         File accountFile = new File(Common.getInstance().getServerCaller().getDataFolder(), "accounts.json");
 
         System.out.println(accountFile.exists());
+
         JSONObject jsonObject = (JSONObject) new JSONParser().parse(new FileReader(accountFile));
         Map<Integer, String> currenciesMap = new HashMap<>();
 
@@ -360,21 +363,45 @@ public class OldFormatConverter {
             internalIterator = logs.iterator();
             while (internalIterator.hasNext()) {
                 JSONObject internalObj = internalIterator.next();
-                engine.saveLog(LogInfo.valueOf((String) internalObj.get("type")), Cause.valueOf((String) internalObj.get("cause")),(String)internalObj.get("causeReason"),account, (double)internalObj.get("amount"),engine.getCurrency((String) internalObj.get("currencyName")),(String)internalObj.get("worldName"), (Timestamp) internalObj.get("timestamp"));
+                engine.saveLog(LogInfo.valueOf((String) internalObj.get("type")), Cause.valueOf((String) internalObj.get("cause")),(String)internalObj.get("causeReason"),account, (double)internalObj.get("amount"),engine.getCurrency((String) internalObj.get("currencyName")),(String)internalObj.get("worldName"), new Timestamp((long)internalObj.get("timestamp")));
             }
 
             JSONArray acls = (JSONArray) obj.get("acls");
             internalIterator = acls.iterator();
             while (internalIterator.hasNext()) {
                 JSONObject internalObj = internalIterator.next();
-                //{"owner":true,"balance":true,"playerName":"khron_nexx","deposit":true,"acl":true,"withdraw":true}
                 engine.saveACL(account, (String)internalObj.get("playerName"), (boolean)internalObj.get("deposit"), (boolean)internalObj.get("withdraw"), (boolean) internalObj.get("acl"), (boolean) internalObj.get("balance"), (boolean) internalObj.get("owner"));
             }
 
         }
+        engine.commit();
+        engine.enableAutoCommit();
         if (log) {
             Common.getInstance().getMainConfig().setValue("System.Logging.Enabled", true);
         }
         Common.getInstance().sendConsoleMessage(Level.INFO, "Converting done!");
+    }
+
+    private Object getObject(Blob blob) throws SQLException {
+        try
+        {
+            ObjectInputStream is = null;
+            is = new ObjectInputStream(blob.getBinaryStream());
+            Object o = null;
+            try {
+                return is.readObject();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (Exception ignored) {
+                }
+            }
+        } catch ( IOException e )
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

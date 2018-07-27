@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,13 +28,14 @@ public class BankDeleteCommand extends CommandExecutor {
     @Override
     public void execute(String sender, String[] args) {
         if (Common.getInstance().getAccountManager().exist(args[0], true)) {
-            Account account = Common.getInstance().getAccountManager().getAccount(args[0], false);
+            Account account = Common.getInstance().getAccountManager().getAccount(args[0], true);
             if (account.getAccountACL().isOwner(sender) || Common.getInstance().getServerCaller().getPlayerCaller().checkPermission(sender, "craftconomy.bank.delete.admin")) {
                 Account owner = Common.getInstance().getAccountManager().getAccount(sender, false);
                 for (Balance balance : account.getAllBalance()) {
                     owner.deposit(balance.getBalance(), balance.getWorld(), balance.getCurrency().getName(), Cause.BANK_DELETE, args[0]);
                 }
                 Common.getInstance().getAccountManager().delete(args[0], true);
+                Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().getString("bank_account_deleted"));
             } else {
                 Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().getString("bank_delete_not_owner"));
             }

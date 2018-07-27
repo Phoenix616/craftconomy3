@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of Craftconomy3.
  *
- * Copyright (c) 2011-2014, Greatman <http://github.com/greatman/>
+ * Copyright (c) 2011-2016, Greatman <http://github.com/greatman/>
  *
  * Craftconomy3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -65,6 +65,8 @@ public class TestConfigCommands {
         assertEquals(DisplayFormat.LONG, Common.getInstance().getDisplayFormat());
         command.execute(TEST_USER, new String[] {"sign"});
         assertEquals(DisplayFormat.SIGN, Common.getInstance().getDisplayFormat());
+        command.execute(TEST_USER, new String[] {"signfront"});
+        assertEquals(DisplayFormat.SIGNFRONT, Common.getInstance().getDisplayFormat());
         command.execute(TEST_USER, new String[] {"majoronly"});
         assertEquals(DisplayFormat.MAJORONLY, Common.getInstance().getDisplayFormat());
         command.execute(TEST_USER, new String[] {"small"});
