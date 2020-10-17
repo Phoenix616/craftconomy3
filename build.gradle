@@ -17,7 +17,7 @@ ext.version = version;
 
 //Variables for signing & other stuff
 ext.url = 'https://github.com/greatman/craftconomy3'
-ext.bukkitVersion = '1.7.9-R0.2'
+ext.bukkitVersion = '1.13.2-R0.1'
 ext."signing.keyId" = System.getenv("keyId")
 ext."signing.secretKeyRingFile" = System.getenv("secretKeyRingFile")
 ext."signing.password" = System.getenv("keyPassword")
@@ -110,7 +110,7 @@ dependencies {
     compile group: 'com.h2database', name: 'h2', version:'1.4.187'
     compile group: 'org.xerial', name: 'sqlite-jdbc', version:'3.7.15-M1'
     testCompile group: 'junit', name: 'junit', version:'4.11'
-    testCompile group: 'org.bukkit', name: 'bukkit', version:'1.8.3-R0.1-SNAPSHOT'
+    testCompile group: 'org.bukkit', name: 'bukkit', version:'1.13.2-R0.1-SNAPSHOT'
     testCompile group: 'org.reflections', name: 'reflections', version:'0.9.9-RC1'
     compile group: 'org.projectlombok', name: 'lombok', version:'1.12.6'
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
