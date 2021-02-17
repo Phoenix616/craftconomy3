@@ -159,14 +159,15 @@ public class Account {
      * @return The new balance. If the account has infinite money. Double.MAX_VALUE is returned.
      */
     public double deposit(double amount, String world, String currencyName, Cause cause, String causeReason) {
-        double result = getBalance(world,currencyName) + format(amount);
+        double balance = getBalance(world,currencyName);
+        double result = balance + format(amount);
         if (!Common.getInstance().getWorldGroupManager().worldGroupExist(world)) {
             world = Common.getInstance().getWorldGroupManager().getWorldGroupName(world);
         }
         Currency currency = Common.getInstance().getCurrencyManager().getCurrency(currencyName);
         if (currency != null) {
             if (!hasInfiniteMoney()) {
-                result = Common.getInstance().getStorageHandler().getStorageEngine().setBalance(this, result, currency, world);
+                result = Common.getInstance().getStorageHandler().getStorageEngine().setBalance(this, balance, result, currency, world);
                 Common.getInstance().writeLog(LogInfo.DEPOSIT, cause, causeReason, this, amount, currency, world);
                 Common.getInstance().getServerCaller().throwEvent(new EconomyChangeEvent(this.getAccountName(), result));
             } else {
@@ -202,15 +203,18 @@ public class Account {
      * @return The new balance. If the account has infinite money. Double.MAX_VALUE is returned.
      */
     public double withdraw(double amount, String world, String currencyName, Cause cause, String causeReason) {
-        BalanceTable balanceTable;
-        double result = getBalance(world,currencyName) - format(amount);
+        double balance = getBalance(world,currencyName);
+        double result = balance - format(amount);
+        if (result < 0) {
+            return -1;
+        }
         if (!Common.getInstance().getWorldGroupManager().worldGroupExist(world)) {
             world = Common.getInstance().getWorldGroupManager().getWorldGroupName(world);
         }
         Currency currency = Common.getInstance().getCurrencyManager().getCurrency(currencyName);
         if (currency != null) {
             if (!hasInfiniteMoney()) {
-                result = Common.getInstance().getStorageHandler().getStorageEngine().setBalance(this, result, currency, world);
+                result = Common.getInstance().getStorageHandler().getStorageEngine().setBalance(this, balance, result, currency, world);
                 Common.getInstance().writeLog(LogInfo.WITHDRAW, cause, causeReason, this, amount, currency, world);
                 Common.getInstance().getServerCaller().throwEvent(new EconomyChangeEvent(this.getAccountName(), result));
             } else {
@@ -256,7 +260,7 @@ public class Account {
         Currency currency = Common.getInstance().getCurrencyManager().getCurrency(currencyName);
         if (currency != null) {
             if (!hasInfiniteMoney()) {
-                result = Common.getInstance().getStorageHandler().getStorageEngine().setBalance(this, amount, currency, world);
+                result = Common.getInstance().getStorageHandler().getStorageEngine().setBalance(this, getBalance(world,currencyName), amount, currency, world);
                 Common.getInstance().writeLog(LogInfo.SET, cause, causeReason, this, amount, currency, world);
                 Common.getInstance().getServerCaller().throwEvent(new EconomyChangeEvent(this.getAccountName(), result));
             }

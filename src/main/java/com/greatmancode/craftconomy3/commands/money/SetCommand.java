@@ -50,10 +50,13 @@ public class SetCommand extends CommandExecutor {
                     worldName = Common.getInstance().getWorldGroupManager().getWorldGroupName(args[3]);
                 }
 
-                Common.getInstance().getAccountManager().getAccount(args[0], false).set(amount, worldName, currency.getName(), Cause.USER, sender);
-                Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().parse("money_set", args[0], Common.getInstance().format(worldName, currency, amount)));
-                if (Common.getInstance().getServerCaller().getPlayerCaller().isOnline(args[0])) {
-                    Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(args[0], Common.getInstance().getLanguageManager().parse("money_set_other", Common.getInstance().format(worldName, currency, amount), sender));
+                if (Common.getInstance().getAccountManager().getAccount(args[0], false).set(amount, worldName, currency.getName(), Cause.USER, sender) >= 0) {
+                    Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().parse("money_set", args[0], Common.getInstance().format(worldName, currency, amount)));
+                    if (Common.getInstance().getServerCaller().getPlayerCaller().isOnline(args[0])) {
+                        Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(args[0], Common.getInstance().getLanguageManager().parse("money_set_other", Common.getInstance().format(worldName, currency, amount), sender));
+                    }
+                } else {
+                    Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().getString("invalid_state"));
                 }
             } else {
                 Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().getString("invalid_amount"));

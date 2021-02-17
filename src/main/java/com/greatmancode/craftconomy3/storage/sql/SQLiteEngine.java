@@ -130,7 +130,7 @@ public class SQLiteEngine extends StorageEngine {
     }
 
     @Override
-    public double setBalance(Account account, double amount, Currency currency, String world) {
+    public double setBalance(Account account, double original, double amount, Currency currency, String world) {
         return 0;
     }
 

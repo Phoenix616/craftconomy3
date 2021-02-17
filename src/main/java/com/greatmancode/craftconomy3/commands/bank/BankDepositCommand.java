@@ -43,10 +43,13 @@ public class BankDepositCommand extends CommandExecutor {
                         }
                     }
                     Account playerAccount = Common.getInstance().getAccountManager().getAccount(sender, false);
-                    if (playerAccount.hasEnough(amount, Account.getWorldGroupOfPlayerCurrentlyIn(sender), currency.getName())) {
-                        playerAccount.withdraw(amount, Account.getWorldGroupOfPlayerCurrentlyIn(sender), currency.getName(), Cause.BANK_DEPOSIT, bankAccount.getAccountName());
-                        bankAccount.deposit(amount, Account.getWorldGroupOfPlayerCurrentlyIn(sender), currency.getName(), Cause.BANK_DEPOSIT, sender);
-                        Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().parse("deposited", Common.getInstance().format(null, currency, amount), args[0]));
+                    if (playerAccount.withdraw(amount, Account.getWorldGroupOfPlayerCurrentlyIn(sender), currency.getName(), Cause.BANK_DEPOSIT, bankAccount.getAccountName()) >= 0) {
+                        if (bankAccount.deposit(amount, Account.getWorldGroupOfPlayerCurrentlyIn(sender), currency.getName(), Cause.BANK_DEPOSIT, sender) >= 0) {
+                            Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().parse("deposited", Common.getInstance().format(null, currency, amount), args[0]));
+                        } else {
+                            playerAccount.deposit(amount, Account.getWorldGroupOfPlayerCurrentlyIn(sender), currency.getName(), Cause.TRANSACTION_REVERT, bankAccount.getAccountName());
+                            Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().getString("invalid_state"));
+                        }
                     } else {
                         Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().getString("not_enough_money"));
                     }

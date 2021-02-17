@@ -43,11 +43,13 @@ public class BankWithdrawCommand extends CommandExecutor {
                         }
                     }
                     Account playerAccount = Common.getInstance().getAccountManager().getAccount(sender, false);
-                    if (bankAccount.hasEnough(amount, Account.getWorldGroupOfPlayerCurrentlyIn(sender), currency.getName())) {
-                        bankAccount.withdraw(amount, Account.getWorldGroupOfPlayerCurrentlyIn(sender), currency.getName(), Cause.BANK_WITHDRAW, sender);
-                        playerAccount.deposit(amount, Account.getWorldGroupOfPlayerCurrentlyIn(sender), currency.getName(), Cause.BANK_WITHDRAW, bankAccount.getAccountName());
-                        //TODO: Language
-                        Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, "{{DARK_GREEN}}Withdrawed {{WHITE}}" + Common.getInstance().format(null, currency, amount) + "{{DARK_GREEN}} from the {{WHITE}}" + args[0] + "{{DARK_GREEN}} bank Account.");
+                    if (bankAccount.withdraw(amount, Account.getWorldGroupOfPlayerCurrentlyIn(sender), currency.getName(), Cause.BANK_WITHDRAW, sender) >= 0) {
+                        if (playerAccount.deposit(amount, Account.getWorldGroupOfPlayerCurrentlyIn(sender), currency.getName(), Cause.BANK_WITHDRAW, bankAccount.getAccountName()) >= 0) {
+                            Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().parse("withdrawn", Common.getInstance().format(null, currency, amount), args[0]));
+                        } else {
+                            bankAccount.deposit(amount, Account.getWorldGroupOfPlayerCurrentlyIn(sender), currency.getName(), Cause.TRANSACTION_REVERT, sender);
+                            Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().getString("invalid_state"));
+                        }
                     } else {
                         Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().getString("bank_not_enough_money"));
                     }

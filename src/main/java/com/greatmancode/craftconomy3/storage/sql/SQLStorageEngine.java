@@ -334,39 +334,41 @@ public abstract class SQLStorageEngine extends StorageEngine {
     }
 
     @Override
-    public double setBalance(Account account, double amount, Currency currency, String world) {
+    public double setBalance(Account account, double original, double amount, Currency currency, String world) {
         Connection connection = null;
         PreparedStatement statement = null;
-        double result = 0;
         try {
             connection = (commitConnection != null) ? commitConnection : db.getConnection();
-            statement = connection.prepareStatement(balanceTable.selectWorldCurrencyEntryAccount);
-            statement.setString(1, account.getAccountName());
-            statement.setString(2, world);
-            statement.setString(3, currency.getName());
-            ResultSet set = statement.executeQuery();
-            if (set.next()) {
-                result = amount;
-                statement.close();
-                statement = connection.prepareStatement(balanceTable.updateEntry);
-                statement.setDouble(1, result);
-                statement.setInt(2, account.getId());
-                statement.setString(3, currency.getName());
-                statement.setString(4, world);
-                statement.executeUpdate();
-                statement.close();
-            } else {
-                result = amount;
-                statement.close();
-                statement = connection.prepareStatement(balanceTable.insertEntry);
-                statement.setDouble(1, result);
+            if (original >= 0) {
+                statement = connection.prepareStatement(balanceTable.selectWorldCurrencyEntryAccount);
+                statement.setString(1, account.getAccountName());
                 statement.setString(2, world);
-                statement.setString(3, account.getAccountName());
-                statement.setBoolean(4, account.isBankAccount());
-                statement.setString(5, currency.getName());
-                statement.executeUpdate();
-                statement.close();
+                statement.setString(3, currency.getName());
+                ResultSet set = statement.executeQuery();
+                if (set.next()) {
+                    statement.close();
+                    statement = connection.prepareStatement(balanceTable.updateEntry);
+                    statement.setDouble(1, amount);
+                    statement.setDouble(2, original);
+                    statement.setInt(3, account.getId());
+                    statement.setString(4, currency.getName());
+                    statement.setString(5, world);
+                    int affected = statement.executeUpdate();
+                    statement.close();
+                    if (affected <= 0) {
+                        return -1;
+                    }
+                    return amount;
+                }
             }
+            statement = connection.prepareStatement(balanceTable.insertEntry);
+            statement.setDouble(1, amount);
+            statement.setString(2, world);
+            statement.setString(3, account.getAccountName());
+            statement.setBoolean(4, account.isBankAccount());
+            statement.setString(5, currency.getName());
+            statement.executeUpdate();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new BackendErrorException(e.getMessage());
@@ -376,7 +378,7 @@ public abstract class SQLStorageEngine extends StorageEngine {
                 Tools.closeJDBCConnection(connection);
             }
         }
-        return result;
+        return -2;
     }
 
     @Override

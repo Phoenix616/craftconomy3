@@ -355,7 +355,7 @@ public class OldFormatConverter {
                 JSONObject internalObj = internalIterator.next();
                 Currency currency = engine.getCurrency(currenciesMap.get(((Long) internalObj.get("currency_id")).intValue()));
                 if (currency != null) {
-                    engine.setBalance(account, (double)internalObj.get("balance"), currency, (String)internalObj.get("worldName"));
+                    engine.setBalance(account, -1, (double)internalObj.get("balance"), currency, (String)internalObj.get("worldName"));
                 }
             }
 

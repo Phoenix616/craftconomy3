@@ -50,8 +50,11 @@ public class BankGiveCommand extends CommandExecutor {
                     worldName = Common.getInstance().getWorldGroupManager().getWorldGroupName(args[3]);
                 }
 
-                bankAccount.deposit(amount, worldName, currency.getName(), Cause.USER, sender);
-                Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().parse("bank_give_success", Common.getInstance().format(worldName, currency, amount), args[0]));
+                if (bankAccount.deposit(amount, worldName, currency.getName(), Cause.USER, sender) >= 0) {
+                    Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().parse("bank_give_success", Common.getInstance().format(worldName, currency, amount), args[0]));
+                } else {
+                    Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().getString("invalid_state"));
+                }
             } else {
                 Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().getString("invalid_amount"));
             }

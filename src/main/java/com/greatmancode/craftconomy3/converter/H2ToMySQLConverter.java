@@ -194,7 +194,7 @@ public class H2ToMySQLConverter {
                 Common.getInstance().getStorageHandler().getStorageEngine().setIgnoreACL(account, accountEntry.getValue().ignoreACL);
 
                 for (Balance balance : accountEntry.getValue().balanceList) {
-                    Common.getInstance().getStorageHandler().getStorageEngine().setBalance(account, balance.balance, currencyList.get(balance.currency_id), balance.worldName);
+                    Common.getInstance().getStorageHandler().getStorageEngine().setBalance(account, -1, balance.balance, currencyList.get(balance.currency_id), balance.worldName);
                 }
                 for (Access access : accountEntry.getValue().accessList) {
                     Common.getInstance().getStorageHandler().getStorageEngine().saveACL(account, access.playerName, access.deposit, access.withdraw, access.acl, access.balance, access.owner);

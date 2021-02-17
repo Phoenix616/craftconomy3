@@ -141,12 +141,13 @@ public abstract class StorageEngine {
      * Set the balance of the account
      *
      * @param account  The account that the balance is set in.
+     * @param original The original amount of money in the table, passing -1 results in a new row being inserted
      * @param amount   The amount of money being placed
      * @param currency The Currency
      * @param world    The world group
-     * @return The balance
+     * @return The result balance, -1 if the recorded balance doesn't match the original, -2 if an error occured
      */
-    public abstract double setBalance(Account account, double amount, Currency currency, String world);
+    public abstract double setBalance(Account account, double original, double amount, Currency currency, String world);
 
     /**
      * Set if the account have infinite money

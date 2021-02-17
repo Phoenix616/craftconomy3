@@ -50,8 +50,7 @@ public class BankTakeCommand extends CommandExecutor {
                     worldName = Common.getInstance().getWorldGroupManager().getWorldGroupName(args[3]);
                 }
 
-                if (bankAccount.hasEnough(amount, worldName, currency.getName())) {
-                    bankAccount.withdraw(amount, worldName, currency.getName(), Cause.USER, sender);
+                if (bankAccount.withdraw(amount, worldName, currency.getName(), Cause.USER, sender) >= 0) {
                     Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().parse("bank_take_success", Common.getInstance().format(worldName, currency, amount), args[0]));
                 } else {
                     Common.getInstance().getServerCaller().getPlayerCaller().sendMessage(sender, Common.getInstance().getLanguageManager().getString("bank_not_enough_money"));
