@@ -128,6 +128,7 @@ shadowJar {
     relocate 'org.slf4j', 'com.greatmancode.libs.org.slf4j'
     //baseName = 'craftconomy3'
     classifier = ''
+    version = ''
 }
 
 task filter(type: Copy) {
