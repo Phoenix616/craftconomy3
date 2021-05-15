@@ -57,6 +57,7 @@ System:
     Username: 'root'
     Password: ''
     Db: 'Craftconomy'
+    UrlParams: ''
     Prefix: 'cc3_'
 
     #Used when you come from H2 and want a MySQL database

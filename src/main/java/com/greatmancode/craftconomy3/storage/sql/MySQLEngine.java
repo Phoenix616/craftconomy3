@@ -32,13 +32,21 @@ public class MySQLEngine extends SQLStorageEngine {
 
     public MySQLEngine() {
         HikariConfig config = new HikariConfig();
+        initConnectionClass(config);
+        String url = "jdbc:mysql://" +
+                Common.getInstance().getMainConfig().getString("System.Database.Address")
+                + ":" + Common.getInstance().getMainConfig().getString("System.Database.Port")
+                + "/" + Common.getInstance().getMainConfig().getString("System.Database.Db")
+                + Common.getInstance().getMainConfig().getString("System.Database.UrlParams");
+        if (config.getDataSourceClassName() != null) {
+            config.addDataSourceProperty("url", url);
+        } else {
+            config.setJdbcUrl(url);
+        }
+
+        config.setUsername(Common.getInstance().getMainConfig().getString("System.Database.Username"));
+        config.setPassword(Common.getInstance().getMainConfig().getString("System.Database.Password"));
         config.setMaximumPoolSize(Common.getInstance().getMainConfig().getInt("System.Database.Poolsize"));
-        config.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
-        config.addDataSourceProperty("serverName", Common.getInstance().getMainConfig().getString("System.Database.Address"));
-        config.addDataSourceProperty("port", Common.getInstance().getMainConfig().getString("System.Database.Port"));
-        config.addDataSourceProperty("databaseName", Common.getInstance().getMainConfig().getString("System.Database.Db"));
-        config.addDataSourceProperty("user", Common.getInstance().getMainConfig().getString("System.Database.Username"));
-        config.addDataSourceProperty("password", Common.getInstance().getMainConfig().getString("System.Database.Password"));
         config.addDataSourceProperty("autoDeserialize", true);
         config.setConnectionTimeout(5000);
         db = new HikariDataSource(config);
@@ -93,4 +101,49 @@ public class MySQLEngine extends SQLStorageEngine {
             Tools.closeJDBCConnection(connection);
         }
     }
+
+    private void initConnectionClass(HikariConfig config) throws RuntimeException {
+        String dataSourceClassName = tryDataSourceClassName("org.mariadb.jdbc.MariaDbDataSource");
+        if (dataSourceClassName == null) {
+            dataSourceClassName = tryDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+        }
+        if (dataSourceClassName != null) {
+            Common.getInstance().getLogger().info("Using " + dataSourceClassName + " database source");
+            config.setDataSourceClassName(dataSourceClassName);
+        }
+
+        if (dataSourceClassName == null) {
+            String driverClassName = tryDriverClassName("org.mariadb.jdbc.Driver");
+            if (driverClassName == null) {
+                driverClassName = tryDriverClassName("com.mysql.cj.jdbc.Driver");
+            }
+            if (driverClassName == null) {
+                driverClassName = tryDriverClassName("com.mysql.jdbc.Driver");
+            }
+
+            if (driverClassName != null) {
+                Common.getInstance().getLogger().info("Using " + driverClassName + " database driver");
+                config.setDriverClassName(driverClassName);
+            } else {
+                throw new RuntimeException("Could not find database driver or data source class! Plugin wont work without a database!");
+            }
+        }
+    }
+
+    private String tryDriverClassName(String className) {
+        try {
+            Class.forName(className).newInstance();
+            return className;
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    private String tryDataSourceClassName(String className) {
+        try {
+            Class.forName(className);
+            return className;
+        } catch (Exception ignored) {}
+        return null;
+    }
+
 }
