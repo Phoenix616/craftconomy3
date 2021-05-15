@@ -37,7 +37,8 @@ public class MySQLEngine extends SQLStorageEngine {
                 Common.getInstance().getMainConfig().getString("System.Database.Address")
                 + ":" + Common.getInstance().getMainConfig().getString("System.Database.Port")
                 + "/" + Common.getInstance().getMainConfig().getString("System.Database.Db")
-                + Common.getInstance().getMainConfig().getString("System.Database.UrlParams");
+                + (Common.getInstance().getMainConfig().has("System.Database.UrlParams")
+                        ? Common.getInstance().getMainConfig().getString("System.Database.UrlParams") : "");
         if (config.getDataSourceClassName() != null) {
             config.addDataSourceProperty("url", url);
         } else {
