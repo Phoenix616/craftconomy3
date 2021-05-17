@@ -112,13 +112,13 @@ public class Account {
     }
 
     /**
-     * Get's the player balance. Sends double.MIN_NORMAL in case of a error
+     * Get's the unformatted player balance. Sends double.MIN_NORMAL in case of a error
      *
      * @param world        The world / world group to search in
      * @param currencyName The currency Name
      * @return The balance. If the account has infinite money. Double.MAX_VALUE is returned.
      */
-    public double getBalance(String world, String currencyName) {
+    private double getUnformattedBalance(String world, String currencyName) {
         double balance = Double.MIN_NORMAL;
         if (!Common.getInstance().getWorldGroupManager().worldGroupExist(world)) {
             world = Common.getInstance().getWorldGroupManager().getWorldGroupName(world);
@@ -131,7 +131,18 @@ public class Account {
                 balance = Double.MAX_VALUE;
             }
         }
-        return format(balance);
+        return balance;
+    }
+
+    /**
+     * Get's the player balance. Sends double.MIN_NORMAL in case of a error
+     *
+     * @param world        The world / world group to search in
+     * @param currencyName The currency Name
+     * @return The balance. If the account has infinite money. Double.MAX_VALUE is returned.
+     */
+    public double getBalance(String world, String currencyName) {
+        return format(getUnformattedBalance(world, currencyName));
     }
 
     /**
@@ -159,8 +170,8 @@ public class Account {
      * @return The new balance. If the account has infinite money. Double.MAX_VALUE is returned.
      */
     public double deposit(double amount, String world, String currencyName, Cause cause, String causeReason) {
-        double balance = getBalance(world,currencyName);
-        double result = balance + format(amount);
+        double balance = getUnformattedBalance(world,currencyName);
+        double result = format(balance) + format(amount);
         if (!Common.getInstance().getWorldGroupManager().worldGroupExist(world)) {
             world = Common.getInstance().getWorldGroupManager().getWorldGroupName(world);
         }
@@ -203,8 +214,8 @@ public class Account {
      * @return The new balance. If the account has infinite money. Double.MAX_VALUE is returned.
      */
     public double withdraw(double amount, String world, String currencyName, Cause cause, String causeReason) {
-        double balance = getBalance(world,currencyName);
-        double result = balance - format(amount);
+        double balance = getUnformattedBalance(world,currencyName);
+        double result = format(balance) - format(amount);
         if (result < 0) {
             return -1;
         }
@@ -260,7 +271,7 @@ public class Account {
         Currency currency = Common.getInstance().getCurrencyManager().getCurrency(currencyName);
         if (currency != null) {
             if (!hasInfiniteMoney()) {
-                result = Common.getInstance().getStorageHandler().getStorageEngine().setBalance(this, getBalance(world,currencyName), amount, currency, world);
+                result = Common.getInstance().getStorageHandler().getStorageEngine().setBalance(this, getUnformattedBalance(world,currencyName), amount, currency, world);
                 Common.getInstance().writeLog(LogInfo.SET, cause, causeReason, this, amount, currency, world);
                 Common.getInstance().getServerCaller().throwEvent(new EconomyChangeEvent(this.getAccountName(), result));
             }
