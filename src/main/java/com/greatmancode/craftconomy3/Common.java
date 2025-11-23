@@ -900,7 +900,9 @@ public class Common implements com.greatmancode.tools.interfaces.Common {
         languageManager.addLanguageEntry("money_infinite_cmd_help", "/money infinite <Account Name> - Put a account in infinite money mode.");
         languageManager.addLanguageEntry("money_infinite_set_false", "The account is no more infinite!");
         languageManager.addLanguageEntry("money_infinite_set_true", "The account is now infinite!");
-        languageManager.addLanguageEntry("money_log_header", "{{DARK_GREEN}} Money Log | Page {{WHITE}}%s {{DARK_GREEN}} | Account {{WHITE}}%s");
+        languageManager.addLanguageEntry("money_log_header", "{{DARK_GREEN}} Money Log | Page {{WHITE}}%s {{DARK_GREEN}} | Account {{WHITE}}%s\n{{WHITE}}Time {{DARK_GREEN}}Type: {{WHITE}}Amount{{DARK_GREEN}}, {{WHITE}}Cause{{DARK_GREEN}}, {{WHITE}}Reason (opt.)");
+        languageManager.addLanguageEntry("money_log_entry", "{{WHITE}}%s {{DARK_GREEN}}%s: {{WHITE}}%s{{DARK_GREEN}}, {{WHITE}}%s");
+        languageManager.addLanguageEntry("money_log_entry_reason", "{{DARK_GREEN}}, {{WHITE}}%s");
         languageManager.addLanguageEntry("money_log_cmd_help", "/money log <page> [Account Name] - Show the account log");
         languageManager.addLanguageEntry("bank_list_cmd_help", "/bank list - List all the bank accounts you have access");
         languageManager.addLanguageEntry("bank_account_list", "List of bank accounts: %s");

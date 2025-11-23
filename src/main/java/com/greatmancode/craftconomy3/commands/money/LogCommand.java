@@ -56,9 +56,9 @@ class LogCommandThread implements Runnable {
     public void run() {
         String ret = Common.getInstance().getLanguageManager().parse("money_log_header", page, user.getAccountName()) + "\n";
         for (LogCommand.LogEntry entry : Common.getInstance().getStorageHandler().getStorageEngine().getLog(user, page)) {
-            ret += "{{DARK_GREEN}}Time: {{WHITE}}" + entry.timestamp + " {{DARK_GREEN}}Type: {{WHITE}}" + entry.type + " {{DARK_GREEN}} Amount: {{WHITE}}" + Common.getInstance().format(entry.worldName, entry.currency, entry.amount) + " {{DARK_GREEN}}Cause: {{WHITE}}" + entry.cause;
+            ret += Common.getInstance().getLanguageManager().parse("money_log_entry", entry.timestamp, entry.type, Common.getInstance().format(entry.worldName, entry.currency, entry.amount), entry.cause);
             if (entry.causeReason != null) {
-                ret += " {{DARK_GREEN}}Reason: {{WHITE}}" + entry.causeReason;
+                ret += Common.getInstance().getLanguageManager().parse("money_log_entry_reason", entry.causeReason);
             }
             ret += "\n";
         }
